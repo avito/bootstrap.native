@@ -1286,7 +1286,7 @@
   
     // set an initial state of the modal
     modal[isAnimating] = false;
-    
+  
     // bind, constants, event targets and other vars
     var self = this, relatedTarget = null,
       bodyIsOverflowing, scrollBarWidth, overlay, overlayDelay, modalTimer,
@@ -1350,13 +1350,13 @@
         if ( overlay && overlay !== null && typeof overlay === 'object' ) {
           modalOverlay = 0;
           DOC[body].removeChild(overlay); overlay = null;
-        }    
+        }
       },
       // triggers
       triggerShow = function() {
         setFocus(modal);
         modal[isAnimating] = false;
-        
+  
         on(globalObject, resizeEvent, self.update, passiveHandler);
         on(modal, clickEvent, dismissHandler);
         on(DOC, keydownEvent, keyHandler);
@@ -1368,17 +1368,17 @@
       triggerHide = function() {
         modal[style].display = '';
         element && (setFocus(element));
-        
+  
         (function(){
           if (!getElementsByClassName(DOC,component+' '+inClass)[0]) {
             resetScrollbar();
             removeClass(DOC[body],component+'-open');
             overlay && hasClass(overlay,'fade') ? (removeClass(overlay,inClass), emulateTransitionEnd(overlay,removeOverlay))
             : removeOverlay();
-            
+  
             off(globalObject, resizeEvent, self.update, passiveHandler);
             off(modal, clickEvent, dismissHandler);
-            off(DOC, keydownEvent, keyHandler);    
+            off(DOC, keydownEvent, keyHandler);
           }
         }());
         modal[isAnimating] = false;
@@ -1391,8 +1391,16 @@
       clickHandler = function(e) {
         if ( modal[isAnimating] ) return;
   
-        var clickTarget = e[target];
-        clickTarget = clickTarget[hasAttribute](dataTarget) || clickTarget[hasAttribute]('href') ? clickTarget : clickTarget[parentNode];
+        var clickTarget = e[target],
+          isTarget = function (element) {
+            return element[hasAttribute](dataTarget) || element[hasAttribute]('href');
+          },
+          findParentTarget = function (element) {
+            return isTarget(element[parentNode])
+              ? element[parentNode]
+              : findParentTarget(element[parentNode]);
+          };
+        clickTarget = isTarget(clickTarget) ? clickTarget : findParentTarget(clickTarget);
         if ( clickTarget === element && !hasClass(modal,inClass) ) {
           modal[modalTrigger] = element;
           relatedTarget = element;
@@ -1432,8 +1440,8 @@
         showCustomEvent = bootstrapCustomEvent(showEvent, component, relatedTarget);
         dispatchCustomEvent.call(modal, showCustomEvent);
         if ( showCustomEvent[defaultPrevented] ) return;
-        
-        modal[isAnimating] = true;    
+  
+        modal[isAnimating] = true;
   
         // we elegantly hide any opened modal
         var currentOpen = getElementsByClassName(DOC,component+' in')[0];
@@ -1474,7 +1482,7 @@
         hideCustomEvent = bootstrapCustomEvent( hideEvent, component);
         dispatchCustomEvent.call(modal, hideCustomEvent);
         if ( hideCustomEvent[defaultPrevented] ) return;
-        
+  
         modal[isAnimating] = true;
         overlay = queryElement('.'+modalBackdropString);
         overlayDelay = overlay && getTransitionDurationFromElement(overlay);
