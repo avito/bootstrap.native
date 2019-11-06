@@ -1096,7 +1096,7 @@
   // DROPDOWN DEFINITION
   // ===================
   var Dropdown = function( element, option ) {
-      
+  
     // initialization element
     element = queryElement(element);
   
@@ -1104,10 +1104,10 @@
     this.persist = option === true || element[getAttribute]('data-persist') === 'true' || false;
   
     // constants, event targets, strings
-    var self = this, 
+    var self = this,
       parent = element[parentNode],
       relatedTarget = null,
-      
+  
       // strings
       children = 'children',
       component = 'dropdown', open = 'open',
@@ -1119,21 +1119,21 @@
       menuItems = (function(){
         var set = menu[children], newSet = [];
         for ( var i=0; i<set[length]; i++ ){
-          set[i][children][length] && (set[i][children][0].tagName === 'A' && newSet[push](set[i]));          
+          set[i][children][length] && (set[i][children][0].tagName === 'A' && newSet[push](set[i]));
         }
         return newSet;
       })(),
   
       // preventDefault on empty anchor links
       preventEmptyAnchor = function(anchor){
-        (anchor.href && anchor.href.slice(-1) === '#' || anchor[parentNode] && anchor[parentNode].href 
-          && anchor[parentNode].href.slice(-1) === '#') && this[preventDefault]();      
+        (anchor.href && anchor.href.slice(-1) === '#' || anchor[parentNode] && anchor[parentNode].href
+          && anchor[parentNode].href.slice(-1) === '#') && this[preventDefault]();
       },
   
       // toggle dismissible events
       toggleDismiss = function(){
         var type = element[open] ? on : off;
-        type(DOC, clickEvent, dismissHandler); 
+        type(DOC, clickEvent, dismissHandler);
         type(DOC, keydownEvent, preventScroll);
         type(DOC, keyupEvent, keyHandler);
         type(DOC, focusEvent, dismissHandler, true);
@@ -1141,8 +1141,8 @@
   
       // handlers
       dismissHandler = function(e) {
-        var eventTarget = e[target], hasData = eventTarget && (eventTarget[getAttribute](dataToggle) 
-                              || eventTarget[parentNode] && getAttribute in eventTarget[parentNode] 
+        var eventTarget = e[target], hasData = eventTarget && (eventTarget[getAttribute](dataToggle)
+                              || eventTarget[parentNode] && getAttribute in eventTarget[parentNode]
                               && eventTarget[parentNode][getAttribute](dataToggle));
         if ( e.type === focusEvent && (eventTarget === element || eventTarget === menu || menu[contains](eventTarget) ) ) {
           return;
@@ -1155,6 +1155,7 @@
         preventEmptyAnchor.call(e,eventTarget);
       },
       clickHandler = function(e) {
+        e.preventDefault();
         relatedTarget = element;
         show();
         preventEmptyAnchor.call(e,e[target]);
@@ -1164,16 +1165,16 @@
         if( key === 38 || key === 40 ) { e[preventDefault](); }
       },
       keyHandler = function(e){
-        var key = e.which || e.keyCode, 
+        var key = e.which || e.keyCode,
             activeItem = DOC.activeElement,
             idx = menuItems[indexOf](activeItem[parentNode]),
             isSameElement = activeItem === element,
             isInsideMenu = menu[contains](activeItem),
             isMenuItem = activeItem[parentNode][parentNode] === menu;
-        
+  
         if ( isMenuItem ) { // navigate up | down
-          idx = isSameElement ? 0 
-                              : key === 38 ? (idx>1?idx-1:0) 
+          idx = isSameElement ? 0
+                              : key === 38 ? (idx>1?idx-1:0)
                               : key === 40 ? (idx<menuItems[length]-1?idx+1:idx) : idx;
           menuItems[idx] && setFocus(menuItems[idx][children][0]);
         }
@@ -1185,7 +1186,7 @@
           self.toggle();
           relatedTarget = null;
         }
-      },  
+      },
   
       // private methods
       show = function() {
@@ -1198,9 +1199,9 @@
   
         element[open] = true;
         off(element, clickEvent, clickHandler);
-        setTimeout(function(){ 
+        setTimeout(function(){
           setFocus( menu[getElementsByTagName]('INPUT')[0] || element ); // focus the first input item | element
-          toggleDismiss(); 
+          toggleDismiss();
           shownCustomEvent = bootstrapCustomEvent( shownEvent, component, relatedTarget);
           dispatchCustomEvent.call(parent, shownCustomEvent);
           // if ( shownCustomEvent[defaultPrevented] ) return; // TO BE DECIDED
@@ -1213,7 +1214,7 @@
   
         removeClass(parent,open);
         element[setAttribute](ariaExpanded,false);
-        
+  
         element[open] = false;
         toggleDismiss();
         setFocus(element);
@@ -1229,7 +1230,7 @@
   
     // public methods
     this.toggle = function() {
-      if (hasClass(parent,open) && element[open]) { hide(); } 
+      if (hasClass(parent,open) && element[open]) { hide(); }
       else { show(); }
     };
   
